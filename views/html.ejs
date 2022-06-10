@@ -1,0 +1,481 @@
+<html>
+<head>
+
+<title> Demo socket IO</title>
+
+
+	<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+	<script src="socket.io/socket.io.js"></script>
+	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+	<link rel="stylesheet" href="/stylesheet/style.css">
+
+
+
+<style>
+	body{
+      background: blue;
+      margin: 0;
+    } 
+
+</style>
+
+
+
+
+
+<script>
+
+var socket = io("http://192.168.50.88:3000");
+
+// hàm lắng nghe server gửi data
+
+socket.on("web", function(data){
+
+console.log(data); //F12
+
+
+console.log("Nhiệt độ:" + data.nhietdo);
+
+console.log("Độ ẩm:" + data.doam);
+
+console.log("Ánh sáng:" + data.anhsang);
+
+console.log("Relay 1:" +data.relay1);
+console.log("Relay 1:" +data.relay2);
+
+document.getElementById("nhietdo").innerHTML = data.nhietdo ;
+     
+		// hiển thị độ ẩm 
+document.getElementById("doam").innerHTML = data.doam ; 
+     
+		// hiển thị ánh sáng 
+document.getElementById("anhsang").innerHTML = data.anhsang ;
+
+
+if(data.relay1 == 0)
+{
+	document.getElementById("den1").src="images/off.jpg";
+	document.getElementById("myCheckthietbi1").checked = false ;
+}
+else if(data.relay1 == 1)
+{
+	document.getElementById("den1").src="images/on.jpg";
+	document.getElementById("myCheckthietbi1").checked = true ;
+}
+
+if(data.relay2 == 0)
+{
+	document.getElementById("den2").src="images/off.jpg";
+	document.getElementById("myCheckthietbi2").checked = false ;
+}
+else if(data.relay2 == 1)
+{
+	document.getElementById("den2").src="images/on.jpg";
+	document.getElementById("myCheckthietbi2").checked = true ;
+}
+
+});
+
+
+	google.charts.load('current', {'packages':['gauge']});
+     google.charts.setOnLoadCallback(drawChart);
+	 function drawChart() 
+      {
+	        var data = google.visualization.arrayToDataTable([
+          ['Label', 'Value'],
+          ['Nhiệt độ', 80],
+        ]);
+		
+		var data1 = google.visualization.arrayToDataTable([
+          ['Label', 'Value'],
+          ['Độ ẩm', 80],
+ 
+        ]);
+        var data2 = google.visualization.arrayToDataTable([
+          ['Label', 'Value'],
+          ['Lux', 80],
+ 
+        ]);
+		
+		var optionsnhietdo = {
+          min: 0, max: 150,
+          width: 400, height: 120,
+          redFrom: 130, redTo: 150,
+          yellowFrom:100, yellowTo: 140,
+          minorTicks: 5
+        };
+		
+		var optionsdoam = {
+          min: 0, max: 150,
+          width: 400, height: 120,
+          redFrom: 130, redTo: 150,
+          yellowFrom:100, yellowTo: 140,
+          minorTicks: 5
+        };
+        
+        var optionskhiga = {
+          min: 0, max: 3000,
+          width: 400, height: 120,
+          redFrom: 2800, redTo: 3000,
+          yellowFrom:2000, yellowTo: 2800,
+          minorTicks: 5
+        };
+		
+		
+		
+		var chart = new google.visualization.Gauge(document.getElementById('chart_nhietdo'));
+		
+		var chart1 = new google.visualization.Gauge(document.getElementById('chart_doam'));
+        var chart2 = new google.visualization.Gauge(document.getElementById('chart_khiga'));
+		
+		chart.draw(data, optionsnhietdo);
+		chart1.draw(data1, optionsdoam);
+        chart2.draw(data2, optionskhiga);
+		
+		setInterval(function() {
+		  
+		  var datanhietdo = document.getElementById("nhietdo").innerHTML;
+          data.setValue(0, 1, datanhietdo);
+          chart.draw(data, optionsnhietdo);
+        }, 300);
+		
+		 setInterval(function() {
+		   var datadoam = document.getElementById("doam").innerHTML;
+          data1.setValue(0, 1, datadoam);
+          chart1.draw(data1, optionsdoam);
+        }, 300);
+        
+        setInterval(function() {
+		   
+		   var datadokhiga = document.getElementById("anhsang").innerHTML;
+		  
+          data2.setValue(0, 1, datadokhiga);
+          chart2.draw(data2, optionskhiga);
+        }, 300);
+	  }
+	
+
+// gửi riêng dùng hàm io.to("socketid").emit();
+// hàm viết gửi data lên server
+  
+  
+  // function FunctionButton1()
+  // {
+	// socket.emit("htmlclient","A0B");
+	// var x = document.getElementById("snackbar");
+  // x.className = "show";
+  // setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+
+  // }
+  
+  // function FunctionButton2()
+  // {
+	// socket.emit("htmlclient","A1B");
+	// var x = document.getElementById("snackbar");
+  // x.className = "show";
+  // setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+  // }
+  
+  
+  function sendtext1()
+  {
+	var ssid = document.getElementById("ssid").value;
+	socket.emit("htmlclient",ssid);
+	var x = document.getElementById("snackbar");
+  x.className = "show";
+  setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+  }
+  
+  function sendtext2()
+  {
+  var pass = document.getElementById("pass").value;
+	socket.emit("htmlclient",pass);
+	var x = document.getElementById("snackbar");
+  x.className = "show";
+  setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+  }
+  
+  function myFunctionRange()
+  {
+	var textrange = document.getElementById("myRange").value;
+	
+	console.log(textrange);
+	
+	socket.emit("htmlclient",textrange);
+	var x = document.getElementById("snackbar");
+  x.className = "show";
+  setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+  }
+ function SEND_1()
+ {
+	var caidat1 = "E" + document.getElementById("caidat1").value + "F";
+		
+	socket.emit("htmlclient",caidat1);
+	var x = document.getElementById("snackbar");
+  x.className = "show";
+  setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+ }
+ function SEND_2()
+ {
+	var caidat2 = "G" + document.getElementById("caidat2").value + "H";
+		
+	socket.emit("htmlclient",caidat2);
+	var x = document.getElementById("snackbar");
+  x.className = "show";
+  setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+ }
+ 
+function changeFunc()
+   {
+    var selectBox = document.getElementById("selectBox");
+    var selectedValue = selectBox.options[selectBox.selectedIndex].value;
+
+	if(selectedValue == 1)
+	{
+		openCity(event, 'Dieukhien');
+	}
+	else if(selectedValue == 2)
+	{
+		openCity(event, 'CamBien');
+	}
+	
+	else
+	{
+		openCity(event, 'GioiThieu');
+	}
+	}
+
+function start(){
+    openCity(event, 'GioiThieu');
+}	
+
+function Dieukhienthietbi1()
+ {
+	 var checkBoxTB1 = document.getElementById("myCheckthietbi1");
+        if (checkBoxTB1.checked == true)
+        {       
+            socket.emit("htmlclient","A1B");
+        } 
+        else  if (checkBoxTB1.checked == false)
+        {
+           socket.emit("htmlclient","A0B");
+        } 
+		var x = document.getElementById("snackbar");
+  x.className = "show";
+  setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+ }
+ 
+ function Dieukhienthietbi2()
+ {
+	 var checkBoxTB2 = document.getElementById("myCheckthietbi2");
+        if (checkBoxTB2.checked == true)
+        {       
+           socket.emit("htmlclient","C1D");
+        } 
+        else  if (checkBoxTB2.checked == false)
+        {
+           socket.emit("htmlclient","C0D");
+        } 
+		var x = document.getElementById("snackbar");
+  x.className = "show";
+  setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+ }
+</script>
+
+
+</head>
+
+<body onload="start()" style= "background-color: #00FFFF;">
+
+
+  <div style="position: fixed">
+			        <span style = "color: Blue ;"> <b>Chọn</b> </span> 
+			            <select id="selectBox"  onchange="changeFunc()">
+			                <option value = "0" >Giới Thiệu</option>
+				            <option value = "1">Điều Khiển</option>
+				            <option value = "2">Cảm Biến</option>					
+			            </select>
+				</div>	
+
+</br>	
+			
+<div id="Dieukhien" class="tabcontent" class="home container"> 
+   	 <table width="1000" height="400" border="6" cellpadding="10" align="center" >	 
+	 <tr>
+	      <th bgcolor="#FF9900"  colspan="5"> <center> <font size="10"> <span style = "color: red"> Điều Khiển Thiết Bị</span></font></center></th>
+	 </tr>	 
+	 <tr>
+        <td bgcolor="#FFFF00" colspan="1"> <center> <span style = "color: Blue"> <b>  Thiết bị 1 </b>  </span> </center> </td>
+        <td bgcolor="#00FF00" colspan="1" align="center" >  
+				<input type="checkbox" class="checkbox" id="myCheckthietbi1"   onclick="Dieukhienthietbi1()">
+        </td>
+		<td bgcolor="#FFFF00" colspan="1"> <center> <span style = "color: Blue"> <b>  Trạng thái thiết bị 1 </b>  </span> </center> </td>
+		<td bgcolor="#ffffff" colspan="2" align="center">
+		<img id="den1"src="images/on.jpg" />
+        </td>		
+     </tr>
+	 
+	 <tr>
+        <td bgcolor="#FFFF00" colspan="1"> <center> <span style = "color: Blue"> <b>  Thiết bị 2 </b>  </span> </center> </td>
+        <td bgcolor="#00FF00" colspan="1" align="center">  
+		      <input type="checkbox" class="checkbox" id="myCheckthietbi2"   onclick="Dieukhienthietbi2()">		  
+        </td>
+		<td bgcolor="#FFFF00" colspan="1"> <center> <span style = "color: Blue"> <b>  Trạng thái thiết bị 2 </b>  </span> </center> </td>
+		<td bgcolor="#ffffff" colspan="2" align="center">
+			<img id="den2" src="images/on.jpg" />
+        </td>		
+     </tr>
+	 <tr>
+        <td bgcolor="#FFFF00" colspan="1"> <center> <span style = "color: Blue"> <b>  Thiết bị 3 </b>  </span> </center> </td>
+        <td bgcolor="#00FF00" colspan="1" align="center" >  
+				<input type="checkbox" class="checkbox" id="myCheckthietbi3"   onclick="Dieukhienthietbi3()">
+        </td>
+		<td bgcolor="#FFFF00" colspan="1"> <center> <span style = "color: Blue"> <b>  Trạng thái thiết bị 3 </b>  </span> </center> </td>
+		<td bgcolor="#ffffff" colspan="2" align="center">  
+		<img id="den3" src="images/on.jpg" />
+        </td>		
+     </tr>
+	 <tr>
+        <td bgcolor="#FFFF00" colspan="1"> <center> <span style = "color: Blue"> <b>  Thiết bị 4 </b>  </span> </center> </td>
+        <td bgcolor="#00FF00" colspan="1" align="center" >  
+				<input type="checkbox" class="checkbox" id="myCheckthietbi4"   onclick="Dieukhienthietbi4()">
+        </td>
+		<td bgcolor="#FFFF00" colspan="1"> <center> <span style = "color: Blue"> <b>  Trạng thái thiết bị 4 </b>  </span> </center> </td>
+		<td bgcolor="#ffffff" colspan="2" align="center">
+			<img  id="den4" src="images/on.jpg" />
+        </td>		
+     </tr>	 	   	 
+	 </table>	 
+</div>
+
+<div id="CamBien" class="tabcontent">
+
+  <table width="1000" height="400" border="5" cellpadding="15" align="center">
+     <tr>
+	      <th  bgcolor="#FF9900" colspan="15"> <center> <font size="10"> <span style = "color: red"> THÔNG SỐ CẢM BIẾN</span></font></center></th>
+	 </tr>  
+	 <tr>
+        <td  bgcolor="#FFFF00" colspan="1"> <center> <span style = "color: Blue"> <b> Nhiệt Độ </b> </span> </center> </td>
+        <td bgcolor="#FF00FF" colspan="1" style="width: 200px; height: 50px;">
+			<center>
+		    <h1>
+				<label id= 'nhietdo'>0</label>   
+			</h1>
+			</center>
+		
+        </td>
+		<td bgcolor="#FFFF00" colspan="1">
+			<center>
+			<div id="chart_nhietdo"  ;style="width: 400px; height: 120px;"></div>
+			</center>
+        </td>
+     </tr>	 
+	 <tr>
+        <td  bgcolor="#FFFF00" colspan="1"> <center> <span style = "color: Blue"> <b> Độ Ẩm </b> </span> </center> </td>
+        <td bgcolor="#FF00FF" colspan="1" style="width: 200px; height: 50px;">
+			<center>
+		    <h1>
+				<label id= 'doam'>0</label>   
+			</h1>
+			</center>
+			
+        </td>
+		<td bgcolor="#FFFF00" colspan="1">
+			<center>
+		   
+			 <div id="chart_doam";style="width: 400px; height: 120px;"></div>
+			 </center>
+        </td>
+     </tr>	 
+	 <tr>
+        <td  bgcolor="#FFFF00" colspan="1"> <center> <span style = "color: Blue"> <b> Ánh Sáng </b> </span> </center> </td>
+        <td bgcolor="#FF00FF" colspan="1" style="width: 200px; height: 50px;">
+			<center>
+		    <h1>
+				<label id= 'anhsang'>0</label> 
+				
+			</h1>
+			</center>
+			
+        </td>
+		<td bgcolor="#FFFF00" colspan="1">
+			<center>
+		    <h1>
+				
+				<div id="chart_khiga";style="width: 400px; height: 120px;"></div>
+			</h1>
+			</center>
+			
+        </td>
+     </tr> 
+	 <tr>
+        <td  bgcolor="#FFFF00" colspan="1"> <center> <span style = "color: Blue"> <b> Cài Đặt 1</b> </span> </center> </td>
+        <td bgcolor="#FF00FF" colspan="1" style="width: 200px; height: 50px;">
+		<center>
+		    <input id="caidat1" type="text" size="40" placeholder="Cài Đặt 1" style="width: 300px; height: 50px;" >
+			</center>
+			
+        </td>
+		<td bgcolor="#FFFF00" colspan="1">
+		<center>
+		    
+			<button id="btnSEND1"  class="button1" onclick = "SEND_1()">Send 1</button>
+			</center>
+        </td>
+     </tr> 
+	 <tr>
+        <td  bgcolor="#FFFF00" colspan="1"> <center> <span style = "color: Blue"> <b> Cài Đặt 2</b> </span> </center> </td>
+        <td bgcolor="#FF00FF" colspan="1" style="width: 200px; height: 50px;">
+		<center>
+		    <input id="caidat2" type="text" size="40" placeholder="Cài Đặt 2" style="width: 300px; height: 50px;">
+			</center>
+			
+        </td>
+		<td bgcolor="#FFFF00" colspan="1">
+		<center>
+		   
+			<button id="btnSEND2"  class="button1" onclick = "SEND_2()">Send 2</button>
+			</center>
+        </td>
+     </tr>
+  </table>
+  
+</div>
+<div id="GioiThieu" class="tabcontent" >
+   <section id="home">
+        <div class="home container">
+            <div>
+                <h1>Hệ thống IOT<span></span></h1>
+                <h1>Server NodeJS<span></span></h1>
+				
+            </div>
+			</br>
+			
+        </div>
+    </section>
+</div>
+</br>
+<div id="snackbar">Đã send</div>
+<script>
+function openCity(evt, cityName) 
+{	
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tabcontent");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName("tablinks");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+    document.getElementById(cityName).style.display = "block";
+    evt.currentTarget.className += " active";
+}
+
+</script>
+
+</body>
+
+
+</html>
