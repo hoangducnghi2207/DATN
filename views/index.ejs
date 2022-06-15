@@ -20,7 +20,7 @@
 <script type="text/javascript">
 
 	  
-var socket = io("http://192.168.1.5:3000");
+var socket = io("http://localhost:3000");
 
 // hàm lắng nghe server gửi data
 
@@ -42,9 +42,17 @@ IsJsonString(data);
 				document.getElementById("nhietdo").innerHTML = DataJson.ND;
 			}
 			
-			if(DataJson.DA != null)
+			if(DataJson.PH != null)
 			{
-				document.getElementById("doam").innerHTML = DataJson.DA;
+				document.getElementById("doph").innerHTML = DataJson.PH;
+			}
+            if(DataJson.O2 != null)
+			{
+				document.getElementById("oxi").innerHTML = DataJson.O2;
+			}
+            if(DataJson.NTU != null)
+			{
+				document.getElementById("ntu").innerHTML = DataJson.NTU;
 			}
 			
 			
@@ -333,11 +341,11 @@ function Dieukhienthietbi1()
      </tr>
 	 
 	 <tr>
-        <td bgcolor="#FFFF00" colspan="1"> <center> <span style = "color: Blue"> <b>  Độ ẩm </b>  </span> </center> </td>
+        <td bgcolor="#FFFF00" colspan="1"> <center> <span style = "color: Blue"> <b>  Độ PH</b>  </span> </center> </td>
         <td bgcolor="#00FF00" colspan="1" align="center">  
 		  
 		    <h1>
-				<label id= 'doam'>0</label>   
+				<label id= 'doph'>0</label>   
 			</h1>
 				  
         </td>
@@ -347,11 +355,11 @@ function Dieukhienthietbi1()
         </td>		
      </tr>
 	 <tr>
-        <td bgcolor="#FFFF00" colspan="1"> <center> <span style = "color: Blue"> <b>  Ánh sáng </b>  </span> </center> </td>
+        <td bgcolor="#FFFF00" colspan="1"> <center> <span style = "color: Blue"> <b>  Độ oxi hoà tan </b>  </span> </center> </td>
         <td bgcolor="#00FF00" colspan="1" align="center" >  
 		
 		    <h1>
-				<label id= 'anhsang'>0</label>   
+				<label id= 'oxi'>0</label>   
 			</h1>
 		
         </td>
@@ -361,7 +369,18 @@ function Dieukhienthietbi1()
         </td>		
      </tr>
 	 <tr>
-        
+        <td bgcolor="#FFFF00" colspan="1"> <center> <span style = "color: Blue"> <b>  Độ đục </b>  </span> </center> </td>
+        <td bgcolor="#00FF00" colspan="1" align="center" >  
+		
+		    <h1>
+				<label id= 'ntu'>0</label>   
+			</h1>
+		
+        </td>
+		
+		<td bgcolor="#ffffff" colspan="3" align="center">  
+		<img id="den4" src="images/10.jpg" />
+        </td>		
 		
 		
      </tr>

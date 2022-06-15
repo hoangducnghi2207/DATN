@@ -1,6 +1,6 @@
 #include <WiFi.h>
-#define DEN 0
-#define QUAT 1
+#define BOMNUOC 0
+#define BOMOXI 1
 
 #include <SocketIoClient.h>
 
@@ -9,25 +9,30 @@
 #include <ArduinoJson.h>// 6.10.0
 
 
-const char* ssid     = "TienThanh";
-const char* password = "0964515288";
+const char* ssid     = "SIPLAB";
+const char* password = "amonglab2020";
 
 // Server Ip
-const char* server = "192.168.1.5";
+const char* server = "192.168.0.108";
 // Server port
 int port = 3000;
 //Khai báo thiêt bị
 int TB1 = 0;
 int TB2 = 0;
 float ND = 0; //Nhiet do
-float DA = 0;  //Do am
+float O2 = 0;  //O2
+float PH=0; //PH
+float NTU = 0 // Độ đục
 String Data = "";
 long last = 0;
-#define DA_MIN      50
-#define DA_MAX      60
-#define ND_MIN     20
-#define ND_MAX      32
-int AUTO; // Dieu khien tu dong
+#define ND_MIN 27
+#define ND_MAX 35
+#define O2_MIN 2.0
+#define O2_MAX 5.0
+#define PH_MIN 6.5
+#define PH_MAX 9.0
+#define NTU_MAX 80     
+bool AUTO; // Dieu khien tu dong
 
 SocketIoClient socket;
 String DataMqttJson = "";
@@ -151,10 +156,12 @@ void ParseJson(String Data)
   }
 }
 
-void Datajson(String DataND, String DataDA, String DataTB1, String DataTB2,  String DataAUTO)
+void Datajson(String DataND, String DataPH,String DataO2,String Data NTU, String DataTB1, String DataTB2,  String DataAUTO)
 {
   DataMqttJson  = "{\"ND\":\"" + String(DataND) + "\"," +
-                  "\"DA\":\"" + String(DataDA) + "\"," +
+                  "\"DA\":\"" + String(DataPH) + "\"," +
+                  "\"DA\":\"" + String(DataO2) + "\"," +
+                  "\"DA\":\"" + String(DataNTU) + "\"," +
                   "\"TB1\":\"" + String(DataTB1) + "\"," +
                   "\"TB2\":\"" + String(DataTB2) + "\"," +
                   "\"AUTO\":\"" + String(DataAUTO) + "\"}";
@@ -172,7 +179,7 @@ void SendDataNodeJS()
   {
 
     Chuongtrinhcambien();
-    Datajson(String(ND), String(DA), String(TB1), String(TB2),  String(AUTO));
+    Datajson(String(ND), String(PH),String(O2),String(NTU), String(TB1), String(TB2),  String(AUTO));
 
     last = millis();
   }
